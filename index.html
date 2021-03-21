@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>QR Scanner Demo</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="col">
+    <form class="form-request" method="post" action="/Home/ReqOFD">
+        <h1 class="h3 mb-3 font-weight-normal">Заполните форму</h1>
+    
+        <label for="inputDateTime" class="sr-only">Дата и время операции</label>
+        <input type="datetime-local" id="inputDateTime" name="inputDateTime" class="form-control" placeholder="Дата и время" required="" autofocus="">
+    
+        <label for="inputSumma" class="sr-only">Сумма</label>
+        <input type="number" id="inputSumma" name="inputSumma" class="form-control" placeholder="Сумма" required="">
+    
+        <label for="inputFN" class="sr-only">Заводской номер фискального накопителя</label>
+        <input type="number" id="inputFN" name="inputFN" class="form-control" placeholder="ФН" required="">
+    
+        <label for="inputFD" class="sr-only">Порядковый номер фискального документа</label>
+        <input type="number" id="inputFD" name="inputFD" class="form-control" placeholder="ФД" required="">
+    
+        <label for="inputFPD" class="sr-only">Фискальный признак документа</label>
+        <input type="number" id="inputFPD" name="inputFPD" class="form-control" placeholder="ФПД" required="">
+    
+        <label for="inputType" class="sr-only">Вид операции</label>
+        <select class="custom-select d-block w-100" id="inputType" name="inputType" required="">
+            <option>Выбрать тип...</option>
+            <option value="1">Приход</option>
+            <option value="2">Возврат прихода</option>
+            <option value="3">Расход</option>
+            <option value="4">Возврат расхода</option>
+        </select>
+    
+        <div class="container">
+            <div class="row pt-2">
+                <button id="qrscan" class="btn btn-lg btn-info btn-block" type="button">Сканировать QR</button>
+            </div>
+            <div class="row pt-2">
+                <input type="file" id="file-selector">
+            </div>
+            <div class="row pt-2">
+                <button id="submit" class="btn btn-lg btn-primary btn-block" type="submit">Проверить</button>
+            </div>
+        </div>
+        <input name="__RequestVerificationToken" type="hidden" value="CfDJ8E_rZjUJR3hHvDSpSFd1_c_DJ1_acTNle9GM3OrXkzVQnYtPvaqQ4PKKqx8b14xmlAVOo8T5lfHvfav8REwsM4Pyt-D2EAGuwB59q5Y2BcxevfwOD3M5QI-fCXrm-3gKo6TiPwSiCOSwk1sP9K9Zqu0">
+    </form>
+    <div class="modal-auth">
+        <div class="modal-dialog modal-dialog-auth">
+            <button class="close-auth">&times;</button>
+            <video id="qr-video"></video>
+        </div>
+    </div>
+</div>
+<script src="js/main.js"></script>
+<script type="module">
+    import QrScanner from './js/qr-scanner.min.js';
+    QrScanner.WORKER_PATH = './js/qr-scanner-worker.min.js';
+
+    // ####### Web Cam Scanning #######
+
+    const scanner = new QrScanner(video, result => parseString(result));
+
+    scanner.start();
+
+    // ####### File Scanning #######
+
+    fileSelector.addEventListener('change', () => {
+        const file = fileSelector.files[0];
+        if (!file) return;
+        QrScanner.scanImage(file).then(result => parseString(result));
+    });
+</script>
+</body>
+</html>
